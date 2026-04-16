@@ -1,0 +1,974 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050508">
+<meta name="description" content="VOID — You are not a scent. You're a signal. A futuristic luxury fragrance identity system.">
+<title>VOID — Signal Perfume System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#05050a;
+  --obsidian:#0b0b14;
+  --ink:#12121d;
+  --violet:#b04dff;
+  --rose:#ff2d7a;
+  --ice:#4dfff3;
+  --gold:#ffc13b;
+  --glass:rgba(255,255,255,0.04);
+  --glass-strong:rgba(255,255,255,0.07);
+  --line:rgba(255,255,255,0.09);
+  --mist:rgba(255,255,255,0.62);
+  --ghost:rgba(255,255,255,0.32);
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;background:var(--void)}
+body{
+  background:var(--void);
+  color:#fff;
+  font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-weight:300;
+  line-height:1.5;
+  overflow-x:hidden;
+  min-height:100vh;
+  letter-spacing:0.005em;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+img,svg{display:block;max-width:100%}
+
+/* ambient aurora background */
+.aurora{
+  position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;
+  background:
+    radial-gradient(900px 700px at 85% -10%,rgba(176,77,255,0.22),transparent 60%),
+    radial-gradient(800px 600px at -10% 20%,rgba(255,45,122,0.18),transparent 60%),
+    radial-gradient(700px 500px at 50% 120%,rgba(77,255,243,0.14),transparent 60%),
+    var(--void);
+}
+.aurora::before{
+  content:"";position:absolute;inset:-20%;
+  background:
+    radial-gradient(400px 400px at 20% 60%,rgba(176,77,255,0.18),transparent 70%),
+    radial-gradient(300px 300px at 80% 30%,rgba(255,45,122,0.15),transparent 70%);
+  filter:blur(40px);
+  animation:drift 18s ease-in-out infinite alternate;
+}
+@keyframes drift{
+  0%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-3%,2%) scale(1.05)}
+  100%{transform:translate(2%,-1%) scale(1.02)}
+}
+
+/* grain */
+.grain{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.35;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* custom cursor (desktop only) */
+#cursor,#cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);will-change:transform;display:none}
+#cursor{width:6px;height:6px;background:#fff;border-radius:50%;mix-blend-mode:difference}
+#cursor-ring{width:34px;height:34px;border:1px solid rgba(255,255,255,0.35);border-radius:50%;transition:width .25s var(--ease),height .25s var(--ease),border-color .25s}
+body.cursor-active{cursor:none}
+body.cursor-active #cursor,body.cursor-active #cursor-ring{display:block}
+body.cursor-hot #cursor-ring{width:56px;height:56px;border-color:var(--violet)}
+
+/* typography */
+.serif{font-family:'Fraunces',serif;font-weight:300;letter-spacing:-0.02em}
+.mono{font-family:'Space Grotesk',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:0.08em;text-transform:uppercase;font-size:.7rem;color:var(--mist)}
+.grad-text{
+  background:linear-gradient(100deg,#fff 0%,var(--violet) 30%,var(--rose) 55%,var(--ice) 85%,#fff 100%);
+  background-size:200% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shine 8s linear infinite;
+}
+@keyframes shine{to{background-position:-200% 0}}
+
+/* NAV */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:.9rem 1.1rem;
+  display:flex;align-items:center;justify-content:space-between;
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  background:linear-gradient(180deg,rgba(5,5,10,0.7),rgba(5,5,10,0.25));
+  border-bottom:1px solid var(--line);
+}
+.logo{display:flex;align-items:center;gap:.55rem;font-weight:700;letter-spacing:.25em;font-size:.95rem}
+.logo-mark{
+  width:22px;height:22px;border-radius:50%;
+  background:conic-gradient(from 180deg,var(--violet),var(--rose),var(--ice),var(--violet));
+  filter:blur(.2px);
+  position:relative;
+}
+.logo-mark::after{content:"";position:absolute;inset:4px;background:var(--void);border-radius:50%}
+.nav-links{display:none;gap:1.6rem;font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;color:var(--mist)}
+.nav-links a{transition:color .3s}
+.nav-links a:hover{color:#fff}
+.nav-actions{display:flex;align-items:center;gap:.5rem}
+.icon-btn{
+  width:40px;height:40px;border-radius:999px;border:1px solid var(--line);
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--glass);transition:transform .25s var(--ease),border-color .25s,background .25s;
+  position:relative;
+}
+.icon-btn:hover{border-color:rgba(255,255,255,0.25);background:var(--glass-strong)}
+.icon-btn:active{transform:scale(.94)}
+.cart-count{
+  position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;
+  background:linear-gradient(135deg,var(--violet),var(--rose));
+  color:#fff;border-radius:999px;font-size:.65rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 14px rgba(176,77,255,.55);
+  transform:scale(0);transition:transform .35s var(--ease);
+}
+.cart-count.active{transform:scale(1)}
+
+/* MOBILE MENU */
+.menu-toggle{display:inline-flex}
+@media(min-width:900px){
+  .nav-links{display:flex}
+  .menu-toggle{display:none}
+}
+.menu-overlay{
+  position:fixed;inset:0;z-index:90;background:rgba(5,5,10,0.86);backdrop-filter:blur(24px);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2rem;
+  opacity:0;pointer-events:none;transition:opacity .35s var(--ease);
+}
+.menu-overlay.open{opacity:1;pointer-events:auto}
+.menu-overlay a{
+  font-family:'Fraunces',serif;font-weight:300;font-size:clamp(2rem,8vw,3.6rem);
+  letter-spacing:-0.02em;color:#fff;
+}
+.menu-overlay .mono{position:absolute;top:1.3rem;left:1.3rem}
+
+/* HERO */
+.hero{
+  min-height:100vh;min-height:100svh;
+  padding:7rem 1.2rem 4rem;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.5rem .9rem;border-radius:999px;border:1px solid var(--line);
+  background:var(--glass);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mist);
+  margin-bottom:1.6rem;
+}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--ice);box-shadow:0 0 10px var(--ice);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35;transform:scale(.7)}}
+.hero h1{
+  font-family:'Fraunces',serif;font-weight:300;
+  font-size:clamp(2.6rem,11vw,7rem);
+  line-height:.98;letter-spacing:-0.035em;
+  max-width:14ch;margin:0 auto;
+}
+.hero h1 em{font-style:italic;font-weight:300}
+.hero-sub{
+  margin:1.6rem auto 0;max-width:46ch;
+  color:var(--mist);font-size:clamp(.95rem,3.2vw,1.05rem);line-height:1.6;
+}
+.hero-cta{
+  margin-top:2.4rem;display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center;width:100%;
+}
+.btn{
+  position:relative;overflow:hidden;
+  padding:1rem 1.4rem;border-radius:999px;
+  font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;
+  display:inline-flex;align-items:center;gap:.6rem;
+  transition:transform .25s var(--ease),box-shadow .3s,border-color .3s;
+  border:1px solid var(--line);background:var(--glass);color:#fff;
+  -webkit-user-select:none;user-select:none;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{
+  background:linear-gradient(120deg,var(--violet),var(--rose));
+  border-color:transparent;
+  box-shadow:0 10px 40px rgba(176,77,255,.28),inset 0 0 0 1px rgba(255,255,255,0.15);
+}
+.btn-primary:hover{box-shadow:0 14px 50px rgba(255,45,122,.4)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.3);background:var(--glass-strong)}
+.btn .arr{transition:transform .3s var(--ease)}
+.btn:hover .arr{transform:translateX(4px)}
+
+.hero-visual{
+  margin-top:3rem;position:relative;width:min(520px,92vw);aspect-ratio:1/1;
+}
+.orb{
+  position:absolute;inset:0;border-radius:50%;
+  background:
+    radial-gradient(circle at 30% 30%,rgba(255,255,255,.9),rgba(255,255,255,0) 35%),
+    radial-gradient(circle at 70% 70%,var(--rose),transparent 55%),
+    radial-gradient(circle at 20% 80%,var(--violet),transparent 60%),
+    radial-gradient(circle at 80% 20%,var(--ice),transparent 55%),
+    #0a0a14;
+  filter:blur(1px);
+  box-shadow:
+    0 0 80px rgba(176,77,255,.35),
+    0 0 160px rgba(255,45,122,.25),
+    inset 0 0 60px rgba(0,0,0,.6);
+  animation:orbSpin 20s linear infinite;
+}
+.orb::after{
+  content:"";position:absolute;inset:-4%;border-radius:50%;
+  border:1px dashed rgba(255,255,255,0.12);
+  animation:orbSpin 40s linear infinite reverse;
+}
+@keyframes orbSpin{to{transform:rotate(360deg)}}
+.orb-label{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;
+  mix-blend-mode:difference;
+}
+.orb-label .n{font-family:'Fraunces',serif;font-size:clamp(2rem,8vw,3.4rem);letter-spacing:-0.03em}
+.orb-label .m{font-size:.7rem;letter-spacing:.35em;color:var(--mist)}
+.scroll-hint{
+  margin-top:2.5rem;font-size:.68rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ghost);
+  display:inline-flex;flex-direction:column;align-items:center;gap:.6rem;
+}
+.scroll-hint .line{width:1px;height:40px;background:linear-gradient(to bottom,transparent,var(--mist),transparent);animation:slide 2.5s ease-in-out infinite}
+@keyframes slide{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* MARQUEE */
+.marquee{
+  overflow:hidden;border-block:1px solid var(--line);
+  padding:1.2rem 0;margin:3rem 0 1rem;
+  mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+}
+.marquee-track{
+  display:flex;gap:3rem;white-space:nowrap;animation:marquee 28s linear infinite;width:max-content;
+}
+.marquee span{
+  font-family:'Fraunces',serif;font-style:italic;font-size:clamp(1.4rem,5vw,2.4rem);
+  color:var(--mist);display:inline-flex;align-items:center;gap:3rem;
+}
+.marquee span::after{content:"✦";color:var(--rose);font-style:normal;font-size:.8em}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* SECTION PRIMITIVES */
+section{padding:5rem 1.2rem;position:relative}
+.section-head{max-width:1200px;margin:0 auto 2.6rem}
+.section-head .mono{display:flex;align-items:center;gap:.7rem}
+.section-head .mono::before{content:"";width:28px;height:1px;background:var(--mist)}
+.section-head h2{
+  font-family:'Fraunces',serif;font-weight:300;
+  font-size:clamp(2rem,7.5vw,4.2rem);line-height:1.02;letter-spacing:-0.03em;
+  margin-top:.8rem;max-width:18ch;
+}
+.section-head p{color:var(--mist);margin-top:1rem;max-width:54ch}
+
+/* PRODUCT GRID */
+.products{max-width:1280px;margin:0 auto}
+.frags-grid{
+  display:grid;gap:1rem;
+  grid-template-columns:1fr;
+}
+@media(min-width:560px){.frags-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.frags-grid{grid-template-columns:repeat(3,1fr)}}
+.frag{
+  position:relative;padding:1.2rem;border-radius:20px;
+  border:1px solid var(--line);background:var(--glass);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  overflow:hidden;isolation:isolate;
+  transition:transform .35s var(--ease),border-color .35s,box-shadow .4s;
+}
+.frag::before{
+  content:"";position:absolute;inset:0;z-index:-1;opacity:.55;
+  background:radial-gradient(80% 80% at 50% 0%,var(--gcolor,var(--violet)),transparent 65%);
+  transition:opacity .5s;
+}
+.frag:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.18);box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.frag:hover::before{opacity:.85}
+.frag-visual{
+  position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(0,0,0,0.4));
+  border:1px solid var(--line);
+  display:flex;align-items:flex-end;justify-content:center;padding:1rem;
+}
+.frag-visual svg{width:55%;height:auto;filter:drop-shadow(0 20px 30px rgba(0,0,0,.6))}
+.frag-chip{
+  position:absolute;top:.9rem;left:.9rem;
+  padding:.3rem .6rem;border-radius:999px;
+  background:rgba(0,0,0,0.55);border:1px solid var(--line);
+  font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mist);
+}
+.frag-num{
+  position:absolute;top:.8rem;right:1rem;
+  font-family:'Fraunces',serif;font-style:italic;font-size:1.2rem;color:rgba(255,255,255,.35);
+}
+.frag-body{padding:1.1rem .2rem .3rem}
+.frag-name{font-family:'Fraunces',serif;font-size:1.6rem;letter-spacing:-0.02em;display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+.frag-mood{color:var(--mist);margin-top:.4rem;font-size:.88rem}
+.frag-meta{margin-top:.8rem;display:flex;justify-content:space-between;align-items:center}
+.frag-price{font-size:1.05rem;font-weight:500}
+.frag-price small{color:var(--ghost);font-weight:300;font-size:.65rem;margin-left:.3rem;letter-spacing:.15em}
+.add-btn{
+  padding:.7rem 1rem;border-radius:999px;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+  border:1px solid var(--line);background:rgba(255,255,255,0.04);
+  transition:background .25s,border-color .25s,transform .2s;
+  display:inline-flex;align-items:center;gap:.5rem;
+}
+.add-btn:hover{background:linear-gradient(120deg,var(--violet),var(--rose));border-color:transparent}
+.add-btn.added{background:var(--ice);color:var(--void);border-color:transparent}
+.add-btn:active{transform:scale(.96)}
+
+/* IDENTITY */
+.identity{
+  max-width:1280px;margin:0 auto;display:grid;gap:2rem;
+  grid-template-columns:1fr;
+}
+@media(min-width:900px){.identity{grid-template-columns:1.2fr .8fr;align-items:end}}
+.identity .big{
+  font-family:'Fraunces',serif;font-weight:300;
+  font-size:clamp(2.2rem,7vw,4.8rem);line-height:1.02;letter-spacing:-0.025em;
+}
+.identity .big em{font-style:italic;color:var(--mist)}
+.identity p{color:var(--mist);margin-top:1.2rem;max-width:50ch;line-height:1.7}
+.stats{
+  display:grid;gap:1rem;grid-template-columns:repeat(2,1fr);
+  padding:1.2rem;border-radius:20px;border:1px solid var(--line);
+  background:var(--glass);backdrop-filter:blur(14px);
+}
+.stat{padding:1rem .8rem;border-radius:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03)}
+.stat .num{font-family:'Fraunces',serif;font-size:clamp(1.6rem,5vw,2.6rem);letter-spacing:-0.02em;display:flex;align-items:baseline;gap:.15rem}
+.stat .num .suffix{font-size:.8em;color:var(--rose)}
+.stat .lbl{margin-top:.35rem;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mist)}
+
+/* RITUAL */
+.ritual-steps{
+  max-width:1280px;margin:0 auto;display:grid;gap:1rem;
+  grid-template-columns:1fr;
+}
+@media(min-width:640px){.ritual-steps{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1000px){.ritual-steps{grid-template-columns:repeat(4,1fr)}}
+.step{
+  position:relative;padding:1.6rem 1.3rem 1.8rem;
+  border-radius:20px;border:1px solid var(--line);
+  background:var(--glass);overflow:hidden;
+  transition:transform .35s var(--ease),border-color .35s;
+}
+.step:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.2)}
+.step .idx{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:300;
+  font-size:3rem;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.3);
+}
+.step h3{font-family:'Fraunces',serif;font-weight:300;font-size:1.4rem;margin:.4rem 0 .6rem;letter-spacing:-0.01em}
+.step p{color:var(--mist);font-size:.92rem;line-height:1.55}
+.step .glow{
+  position:absolute;right:-30%;top:-30%;width:70%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(closest-side,var(--violet),transparent);opacity:.22;filter:blur(10px);
+  transition:transform .8s var(--ease),opacity .4s;
+}
+.step:hover .glow{transform:translate(-10%,10%) scale(1.1);opacity:.35}
+
+/* VIRAL */
+.viral-wrap{
+  max-width:1080px;margin:0 auto;text-align:center;
+  padding:3rem 1.4rem;border-radius:28px;
+  border:1px solid var(--line);
+  background:
+    radial-gradient(60% 90% at 50% 0%,rgba(176,77,255,.22),transparent 70%),
+    radial-gradient(50% 70% at 50% 100%,rgba(77,255,243,.14),transparent 70%),
+    rgba(255,255,255,0.025);
+  position:relative;overflow:hidden;backdrop-filter:blur(14px);
+}
+.viral-wrap h2{
+  font-family:'Fraunces',serif;font-weight:300;letter-spacing:-0.03em;
+  font-size:clamp(2rem,7vw,3.6rem);line-height:1.04;
+}
+.viral-wrap p{color:var(--mist);margin:1rem auto 1.8rem;max-width:52ch}
+.gen-card{
+  margin-top:2rem;padding:1.4rem;border-radius:20px;
+  border:1px solid var(--line);background:rgba(0,0,0,0.35);
+  text-align:left;min-height:130px;
+  display:flex;flex-direction:column;gap:.7rem;
+  position:relative;overflow:hidden;
+}
+.gen-card .small{font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--mist)}
+.gen-card .sig{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(1.4rem,5vw,2rem);line-height:1.2;letter-spacing:-0.01em}
+.gen-card .notes{display:flex;flex-wrap:wrap;gap:.4rem}
+.note-tag{padding:.35rem .7rem;border:1px solid var(--line);border-radius:999px;font-size:.7rem;color:var(--mist);background:rgba(255,255,255,0.03)}
+
+/* FOOTER */
+footer{
+  padding:3.2rem 1.4rem 2rem;margin-top:3rem;
+  border-top:1px solid var(--line);
+  background:linear-gradient(180deg,transparent,rgba(176,77,255,.05));
+}
+.foot{max-width:1280px;margin:0 auto;display:grid;gap:2rem;grid-template-columns:1fr}
+@media(min-width:760px){.foot{grid-template-columns:1.4fr 1fr 1fr 1fr}}
+.foot h4{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mist);margin-bottom:.9rem}
+.foot ul{list-style:none;display:flex;flex-direction:column;gap:.5rem;font-size:.88rem;color:#e8e8ee}
+.foot ul a:hover{color:var(--rose)}
+.foot-brand p{color:var(--mist);margin-top:.8rem;max-width:34ch;font-size:.9rem}
+.foot-bottom{
+  max-width:1280px;margin:2.2rem auto 0;padding-top:1.4rem;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:.6rem;font-size:.72rem;color:var(--ghost);letter-spacing:.12em;text-transform:uppercase;
+}
+
+/* CART PANEL */
+.cart-panel{
+  position:fixed;top:0;right:0;height:100%;height:100dvh;
+  width:min(420px,100%);max-width:100%;
+  background:linear-gradient(180deg,rgba(12,12,20,0.95),rgba(5,5,10,0.98));
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-left:1px solid var(--line);
+  transform:translateX(100%);transition:transform .45s var(--ease);
+  z-index:1000;display:flex;flex-direction:column;
+}
+.cart-panel.open{transform:translateX(0)}
+.cart-header{padding:1.3rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.cart-header h3{font-family:'Fraunces',serif;font-weight:300;font-size:1.4rem;letter-spacing:-0.01em}
+.cart-close{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;transition:transform .2s}
+.cart-close:hover{transform:rotate(90deg)}
+.cart-items{flex:1;overflow-y:auto;padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.9rem}
+.cart-empty{color:var(--mist);text-align:center;padding:3rem 1rem}
+.cart-empty .em{
+  font-family:'Fraunces',serif;font-style:italic;font-size:1.5rem;color:#fff;margin-bottom:.4rem;display:block;
+}
+.cart-item{
+  display:grid;grid-template-columns:60px 1fr auto;gap:.9rem;align-items:center;
+  padding:.8rem;border:1px solid var(--line);border-radius:14px;
+  background:rgba(255,255,255,0.02);
+  animation:slideIn .35s var(--ease);
+}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.cart-thumb{
+  width:60px;height:60px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--c1,var(--violet)),var(--c2,var(--rose)));
+  font-family:'Fraunces',serif;font-size:1.2rem;color:#fff;
+}
+.ci-name{font-size:.95rem;font-weight:500}
+.ci-mood{color:var(--mist);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}
+.ci-price{color:#fff;font-size:.85rem;margin-top:.25rem;font-variant-numeric:tabular-nums}
+.qty{display:flex;align-items:center;gap:.4rem;margin-top:.4rem}
+.qty button{
+  width:24px;height:24px;border:1px solid var(--line);border-radius:6px;font-size:.9rem;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.qty button:hover{border-color:#fff}
+.qty .v{min-width:18px;text-align:center;font-size:.85rem}
+.ci-remove{color:var(--ghost);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;text-align:right}
+.ci-remove:hover{color:var(--rose)}
+.cart-foot{padding:1.3rem;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:.9rem}
+.cart-row{display:flex;justify-content:space-between;font-size:.88rem;color:var(--mist)}
+.cart-row.total{color:#fff;font-size:1.1rem;font-weight:500}
+.checkout-btn{
+  width:100%;padding:1.1rem;border-radius:999px;
+  background:linear-gradient(120deg,var(--violet),var(--rose));color:#fff;
+  font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;font-weight:500;
+  box-shadow:0 10px 40px rgba(255,45,122,.35);
+  transition:transform .2s,box-shadow .3s;
+}
+.checkout-btn:disabled{opacity:.4;cursor:not-allowed}
+.checkout-btn:hover:not(:disabled){box-shadow:0 14px 55px rgba(255,45,122,.55)}
+.checkout-btn:active:not(:disabled){transform:scale(.98)}
+
+.backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:opacity .35s;z-index:999;
+}
+.backdrop.show{opacity:1;pointer-events:auto}
+
+/* TOAST */
+.toast{
+  position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0) + 1.2rem);
+  transform:translate(-50%,150%);
+  padding:.9rem 1.2rem;border-radius:999px;
+  background:rgba(12,12,20,.95);border:1px solid var(--line);
+  font-size:.78rem;letter-spacing:.1em;color:#fff;
+  box-shadow:0 10px 40px rgba(0,0,0,.5);
+  transition:transform .4s var(--ease);
+  z-index:2000;display:flex;align-items:center;gap:.6rem;max-width:90vw;
+}
+.toast.show{transform:translate(-50%,0)}
+.toast .dot{width:8px;height:8px;border-radius:50%;background:var(--ice);box-shadow:0 0 10px var(--ice)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
+</style>
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div id="cursor" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+
+<!-- NAV -->
+<header class="nav" role="banner">
+  <a href="#top" class="logo" aria-label="VOID home">
+    <span class="logo-mark" aria-hidden="true"></span>
+    <span>V O I D</span>
+  </a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#fragrances">Fragrances</a>
+    <a href="#identity">Identity</a>
+    <a href="#ritual">Ritual</a>
+    <a href="#signal">Signal</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="icon-btn" id="cartBtn" aria-label="Open cart">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7h-9A2 2 0 0 1 5.5 18L4 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="icon-btn menu-toggle" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 8h16M4 16h10"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="menu-overlay" id="menuOverlay" aria-hidden="true">
+  <span class="mono">Menu</span>
+  <a href="#fragrances" data-menu-link>Fragrances</a>
+  <a href="#identity" data-menu-link>Identity</a>
+  <a href="#ritual" data-menu-link>Ritual</a>
+  <a href="#signal" data-menu-link>Signal</a>
+  <button class="btn btn-ghost" id="menuClose" style="position:absolute;top:1rem;right:1rem">Close</button>
+</div>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero" aria-label="Intro">
+  <span class="hero-eyebrow reveal"><span class="pulse-dot"></span> Signal 01 · Season ∞ · Live</span>
+  <h1 class="reveal">You are not a scent.<br><em class="grad-text">You're a signal.</em></h1>
+  <p class="hero-sub reveal">Five algorithmically-shaped fragrances. One coded identity system. VOID compresses who you are into a frequency others can feel before they see.</p>
+
+  <div class="hero-cta reveal">
+    <a href="#fragrances" class="btn btn-primary">Enter the collection <span class="arr">→</span></a>
+    <a href="#signal" class="btn btn-ghost">Generate my signal</a>
+  </div>
+
+  <div class="hero-visual reveal" aria-hidden="true">
+    <div class="orb"></div>
+    <div class="orb-label">
+      <div class="n serif">VOID.01</div>
+      <div class="m">Frequency of self</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Encoded in Grasse</span><span>Neural composition</span><span>Zero filler</span>
+    <span>Clean molecular</span><span>Made in shadow</span><span>Signal over scent</span>
+    <span>Encoded in Grasse</span><span>Neural composition</span><span>Zero filler</span>
+    <span>Clean molecular</span><span>Made in shadow</span><span>Signal over scent</span>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section id="fragrances" class="products-wrap">
+  <div class="section-head reveal">
+    <div class="mono">01 — The Collection</div>
+    <h2>Five signals. One <em style="font-style:italic">you</em>.</h2>
+    <p>Each vial is a compressed identity. Wear one, layer two, or rotate with the hour. Every formula is made from clean molecules and algorithmically-mixed rare naturals.</p>
+  </div>
+  <div class="products">
+    <div class="frags-grid" id="fragsGrid"></div>
+  </div>
+</section>
+
+<!-- IDENTITY -->
+<section id="identity">
+  <div class="identity">
+    <div class="reveal">
+      <div class="mono" style="display:flex;align-items:center;gap:.7rem;margin-bottom:1rem"><span style="width:28px;height:1px;background:var(--mist)"></span>02 — Identity Protocol</div>
+      <div class="big">A scent is <em>data</em>.<br>Wear yours <em>encrypted</em>.</div>
+      <p>VOID is an identity system disguised as a perfume house. We treat every wearer as a frequency — not a demographic. Our lab in Grasse blends rare naturals with neural-composed accords, then compresses them into vials you can carry like passwords.</p>
+      <p style="margin-top:.4rem">No testers. No fillers. No algorithms trained on who you're supposed to be.</p>
+    </div>
+    <div class="stats reveal">
+      <div class="stat"><div class="num" data-counter="147" data-suffix="+">0</div><div class="lbl">Molecular accords</div></div>
+      <div class="stat"><div class="num" data-counter="5" data-suffix="">0</div><div class="lbl">Signal fragrances</div></div>
+      <div class="stat"><div class="num" data-counter="99" data-suffix="%">0</div><div class="lbl">Clean formulation</div></div>
+      <div class="stat"><div class="num" data-counter="28" data-suffix="K">0</div><div class="lbl">Identities shipped</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- RITUAL -->
+<section id="ritual">
+  <div class="section-head reveal">
+    <div class="mono">03 — The Ritual</div>
+    <h2>How to wear a signal.</h2>
+    <p>A four-step protocol to bond your fragrance with your biology, your light, and the room you're about to enter.</p>
+  </div>
+  <div class="ritual-steps">
+    <div class="step reveal"><div class="glow"></div><div class="idx">01</div><h3>Scan</h3><p>Take the 60-second signal quiz. We map your tone, rhythm and intent into a five-axis identity print.</p></div>
+    <div class="step reveal"><div class="glow" style="background:radial-gradient(closest-side,var(--rose),transparent)"></div><div class="idx">02</div><h3>Match</h3><p>Our composition model returns one primary fragrance plus two layering vials tuned to your frequency.</p></div>
+    <div class="step reveal"><div class="glow" style="background:radial-gradient(closest-side,var(--ice),transparent)"></div><div class="idx">03</div><h3>Ritual</h3><p>Apply to pulse points, let the molecules breathe, then layer. Thirty seconds. Every morning. Non-negotiable.</p></div>
+    <div class="step reveal"><div class="glow" style="background:radial-gradient(closest-side,var(--gold),transparent)"></div><div class="idx">04</div><h3>Broadcast</h3><p>Walk into the room. The signal does the rest. Re-scan every quarter to evolve with you.</p></div>
+  </div>
+</section>
+
+<!-- VIRAL -->
+<section id="signal">
+  <div class="viral-wrap reveal">
+    <div class="mono" style="display:inline-flex;align-items:center;gap:.7rem;margin-bottom:1rem;justify-content:center"><span style="width:28px;height:1px;background:var(--mist)"></span>04 — Generator</div>
+    <h2>Generate your <em class="grad-text" style="font-style:italic">scent identity</em>.</h2>
+    <p>Tap the button. Our composition engine writes your signal in real time — a name, a mood and three molecular notes unique to this second.</p>
+    <div style="display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" id="genBtn">✦ Generate my signal</button>
+      <button class="btn btn-ghost" id="shareBtn">Share identity</button>
+    </div>
+    <div class="gen-card" id="genCard" aria-live="polite">
+      <span class="small">Your signal</span>
+      <span class="sig" id="genName">Tap generate to reveal your signal.</span>
+      <div class="notes" id="genNotes"></div>
+      <span class="small" id="genCode" style="color:var(--ghost)"></span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot">
+    <div class="foot-brand">
+      <div class="logo"><span class="logo-mark"></span><span>V O I D</span></div>
+      <p>A signal system disguised as a perfume house. Grasse · Tokyo · Brooklyn. Encrypted since forever.</p>
+    </div>
+    <div>
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#fragrances">Fragrances</a></li>
+        <li><a href="#signal">Signal Generator</a></li>
+        <li><a href="#ritual">Gift Vaults</a></li>
+        <li><a href="#identity">Refill Program</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>System</h4>
+      <ul>
+        <li><a href="#">Identity Quiz</a></li>
+        <li><a href="#">Composition Lab</a></li>
+        <li><a href="#">Journal</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">signal@void.perfume</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">Press</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 VOID Laboratories</span>
+    <span>Made in shadow · Shipped worldwide</span>
+  </div>
+</footer>
+
+<!-- CART -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="cart-panel" id="cartPanel" aria-label="Shopping cart" aria-hidden="true">
+  <div class="cart-header">
+    <h3>Your signal vault</h3>
+    <button class="cart-close" id="cartClose" aria-label="Close cart">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <div class="cart-row"><span>Subtotal</span><span id="cartSub">$0</span></div>
+    <div class="cart-row"><span>Shipping</span><span>Free · encrypted</span></div>
+    <div class="cart-row total"><span>Total</span><span id="cartTotal">$0</span></div>
+    <button class="checkout-btn" id="checkoutBtn" disabled>Secure checkout</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span class="dot"></span><span id="toastMsg">Added to cart</span></div>
+
+<script>
+(() => {
+  // -------- DATA --------
+  const PRODUCTS = [
+    { id:'v01', name:'VOID.01 Obsidian', mood:'Signal of Solitude', price:185, c1:'#b04dff', c2:'#1a0033', notes:['Black iris','Smoked cedar','Midnight salt'] },
+    { id:'v02', name:'VOID.02 Aurora',   mood:'Signal of Becoming', price:210, c1:'#ff2d7a', c2:'#4dfff3', notes:['Electric peach','Dew petal','Ice amber'] },
+    { id:'v03', name:'VOID.03 Static',   mood:'Signal of Control',  price:195, c1:'#4dfff3', c2:'#0b0b14', notes:['Ozone','Polished suede','White musk'] },
+    { id:'v04', name:'VOID.04 Ember',    mood:'Signal of Gravity',  price:240, c1:'#ffc13b', c2:'#ff2d7a', notes:['Burnt honey','Oud smoke','Caramel tobacco'] },
+    { id:'v05', name:'VOID.05 Null',     mood:'Signal of the Unknown', price:275, c1:'#7d52ff', c2:'#050508', notes:['Rain on asphalt','Silver sage','Void accord'] }
+  ];
+
+  const $ = (s,c=document)=>c.querySelector(s);
+  const $$ = (s,c=document)=>Array.from(c.querySelectorAll(s));
+  const fmt = n => '$'+n.toFixed(0);
+
+  // -------- PRODUCTS RENDER --------
+  const grid = $('#fragsGrid');
+  PRODUCTS.forEach((p,i)=>{
+    const el = document.createElement('article');
+    el.className = 'frag reveal';
+    el.style.setProperty('--gcolor', p.c1);
+    el.innerHTML = `
+      <div class="frag-visual" aria-hidden="true">
+        <span class="frag-chip">${String(i+1).padStart(2,'0')} · Signal</span>
+        <span class="frag-num">0${i+1}</span>
+        <svg viewBox="0 0 120 180" aria-hidden="true">
+          <defs>
+            <linearGradient id="g${i}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="${p.c1}" stop-opacity=".9"/>
+              <stop offset="1" stop-color="${p.c2}" stop-opacity=".95"/>
+            </linearGradient>
+            <radialGradient id="sh${i}" cx=".3" cy=".25" r=".6">
+              <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+              <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect x="48" y="6" width="24" height="18" rx="2" fill="#1a1a24" stroke="rgba(255,255,255,.2)"/>
+          <rect x="52" y="22" width="16" height="8" fill="#101018"/>
+          <path d="M30 34 H90 Q104 34 104 50 V160 Q104 172 92 172 H28 Q16 172 16 160 V50 Q16 34 30 34 Z" fill="url(#g${i})" stroke="rgba(255,255,255,.22)"/>
+          <path d="M30 34 H90 Q104 34 104 50 V160 Q104 172 92 172 H28 Q16 172 16 160 V50 Q16 34 30 34 Z" fill="url(#sh${i})"/>
+          <text x="60" y="110" text-anchor="middle" fill="rgba(255,255,255,.9)" font-family="Fraunces, serif" font-size="14" font-style="italic">void</text>
+          <text x="60" y="130" text-anchor="middle" fill="rgba(255,255,255,.65)" font-family="Space Grotesk, sans-serif" font-size="9" letter-spacing="3">0${i+1}</text>
+        </svg>
+      </div>
+      <div class="frag-body">
+        <div class="frag-name"><span>${p.name.split(' ')[1]}</span><span class="mono" style="color:var(--ghost)">50 ml</span></div>
+        <div class="frag-mood">${p.mood}</div>
+        <div class="frag-meta">
+          <div class="frag-price">${fmt(p.price)}<small>USD</small></div>
+          <button class="add-btn" data-add="${p.id}" aria-label="Add ${p.name} to cart">
+            <span>Add</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+      </div>`;
+    grid.appendChild(el);
+  });
+
+  // -------- CART --------
+  const state = { cart:{} };
+  const cartBtn = $('#cartBtn');
+  const cartPanel = $('#cartPanel');
+  const backdrop = $('#backdrop');
+  const cartItems = $('#cartItems');
+  const cartCount = $('#cartCount');
+  const cartSub = $('#cartSub');
+  const cartTotal = $('#cartTotal');
+  const checkoutBtn = $('#checkoutBtn');
+
+  function openCart(){
+    cartPanel.classList.add('open'); cartPanel.setAttribute('aria-hidden','false');
+    backdrop.classList.add('show');
+    document.body.style.overflow='hidden';
+  }
+  function closeCart(){
+    cartPanel.classList.remove('open'); cartPanel.setAttribute('aria-hidden','true');
+    backdrop.classList.remove('show');
+    document.body.style.overflow='';
+  }
+  cartBtn.addEventListener('click', openCart);
+  $('#cartClose').addEventListener('click', closeCart);
+  backdrop.addEventListener('click', closeCart);
+
+  function addToCart(id){
+    state.cart[id] = (state.cart[id]||0)+1;
+    renderCart();
+    toast(`${PRODUCTS.find(p=>p.id===id).name} added`);
+    pulse(cartCount);
+    const btn = document.querySelector(`[data-add="${id}"]`);
+    if(btn){ btn.classList.add('added'); btn.querySelector('span').textContent='Added ✓'; setTimeout(()=>{ btn.classList.remove('added'); btn.querySelector('span').textContent='Add'; },1400); }
+  }
+  function removeFromCart(id){ delete state.cart[id]; renderCart(); }
+  function updateQty(id,delta){
+    state.cart[id] = Math.max(0,(state.cart[id]||0)+delta);
+    if(!state.cart[id]) delete state.cart[id];
+    renderCart();
+  }
+
+  function renderCart(){
+    const ids = Object.keys(state.cart);
+    const totalItems = ids.reduce((s,id)=>s+state.cart[id],0);
+    const totalPrice = ids.reduce((s,id)=>s + state.cart[id]*PRODUCTS.find(p=>p.id===id).price,0);
+
+    cartCount.textContent = totalItems;
+    cartCount.classList.toggle('active', totalItems>0);
+    cartSub.textContent = fmt(totalPrice);
+    cartTotal.textContent = fmt(totalPrice);
+    checkoutBtn.disabled = totalItems===0;
+
+    if(ids.length===0){
+      cartItems.innerHTML = `<div class="cart-empty"><span class="em">Empty signal.</span>Your vault is quiet. Add a fragrance to begin composing your identity.</div>`;
+      return;
+    }
+    cartItems.innerHTML = '';
+    ids.forEach(id=>{
+      const p = PRODUCTS.find(x=>x.id===id);
+      const q = state.cart[id];
+      const row = document.createElement('div');
+      row.className='cart-item';
+      row.innerHTML = `
+        <div class="cart-thumb" style="--c1:${p.c1};--c2:${p.c2}">${p.name.split('.')[1].slice(0,2)}</div>
+        <div>
+          <div class="ci-name">${p.name}</div>
+          <div class="ci-mood">${p.mood}</div>
+          <div class="ci-price">${fmt(p.price)} × ${q} = ${fmt(p.price*q)}</div>
+          <div class="qty" role="group" aria-label="Quantity for ${p.name}">
+            <button data-dec="${id}" aria-label="Decrease">−</button>
+            <span class="v">${q}</span>
+            <button data-inc="${id}" aria-label="Increase">+</button>
+          </div>
+        </div>
+        <button class="ci-remove" data-rm="${id}" aria-label="Remove ${p.name}">Remove</button>`;
+      cartItems.appendChild(row);
+    });
+  }
+
+  document.addEventListener('click', e=>{
+    const add = e.target.closest('[data-add]');
+    if(add){ addToCart(add.dataset.add); return; }
+    const inc = e.target.closest('[data-inc]'); if(inc){ updateQty(inc.dataset.inc, +1); return; }
+    const dec = e.target.closest('[data-dec]'); if(dec){ updateQty(dec.dataset.dec, -1); return; }
+    const rm  = e.target.closest('[data-rm]');  if(rm){ removeFromCart(rm.dataset.rm); return; }
+  });
+
+  $('#checkoutBtn').addEventListener('click', ()=>{
+    toast('Secure gateway · demo only');
+  });
+
+  renderCart();
+
+  // -------- TOAST --------
+  const toastEl = $('#toast'), toastMsg = $('#toastMsg');
+  let toastT;
+  function toast(msg){
+    toastMsg.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(()=>toastEl.classList.remove('show'),2200);
+  }
+  function pulse(el){
+    el.animate(
+      [{transform:'scale(1)'},{transform:'scale(1.4)'},{transform:'scale(1)'}],
+      {duration:360, easing:'cubic-bezier(.22,.61,.36,1)'}
+    );
+  }
+
+  // -------- MOBILE MENU --------
+  const menuBtn = $('#menuBtn'), menuOverlay = $('#menuOverlay'), menuClose = $('#menuClose');
+  function openMenu(){ menuOverlay.classList.add('open'); menuBtn.setAttribute('aria-expanded','true'); menuOverlay.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+  function closeMenu(){ menuOverlay.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false'); menuOverlay.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+  menuBtn.addEventListener('click', openMenu);
+  menuClose.addEventListener('click', closeMenu);
+  $$('[data-menu-link]').forEach(a=>a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ closeMenu(); closeCart(); }
+  });
+
+  // -------- SMOOTH SCROLL --------
+  $$('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', e=>{
+      const id = a.getAttribute('href');
+      if(id.length>1){
+        const target = document.querySelector(id);
+        if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth',block:'start'}); }
+      }
+    });
+  });
+
+  // -------- REVEAL + COUNTERS --------
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        en.target.classList.add('in');
+        if(en.target.classList.contains('stats')) $$('[data-counter]', en.target).forEach(runCounter);
+        io.unobserve(en.target);
+      }
+    });
+  },{threshold:.12});
+  $$('.reveal').forEach(el=>io.observe(el));
+
+  function runCounter(el){
+    const target = parseFloat(el.dataset.counter||'0');
+    const suffix = el.dataset.suffix||'';
+    const dur = 1400; const start = performance.now();
+    const tick = now=>{
+      const t = Math.min(1,(now-start)/dur);
+      const eased = 1 - Math.pow(1-t,3);
+      const val = Math.round(target*eased);
+      el.innerHTML = val + (suffix?`<span class="suffix">${suffix}</span>`:'');
+      if(t<1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  // -------- GENERATOR --------
+  const SIG_NAMES = ['Silent Aurora','Obsidian Bloom','Static Ghost','Ember Code','Null Horizon','Velvet Protocol','Ion Petal','Chrome Dusk','Neon Prayer','Quiet Frequency'];
+  const SIG_MOODS = ['introspective · sharp','magnetic · warm','controlled · cold','rebellious · spiced','unreadable · deep','tender · electric','soft · weaponized'];
+  const NOTES = ['black iris','smoked cedar','frozen citrus','electric peach','midnight salt','polished suede','burnt honey','silver sage','rain on asphalt','white oud','carbon rose','ozone','caramel tobacco','ice amber','void accord','liquid leather','cold vanilla','frozen tuberose'];
+  const rand = a => a[Math.floor(Math.random()*a.length)];
+  function generate(){
+    const notes = new Set();
+    while(notes.size<3) notes.add(rand(NOTES));
+    const name = rand(SIG_NAMES);
+    const mood = rand(SIG_MOODS);
+    $('#genName').textContent = `${name} — ${mood}`;
+    $('#genNotes').innerHTML = [...notes].map(n=>`<span class="note-tag">${n}</span>`).join('');
+    const code = 'VOID-'+Math.random().toString(36).slice(2,7).toUpperCase()+'-'+Date.now().toString(36).slice(-4).toUpperCase();
+    $('#genCode').textContent = `Signal code · ${code}`;
+    const card = $('#genCard');
+    card.animate([{opacity:.2,transform:'translateY(6px)'},{opacity:1,transform:'none'}],{duration:500,easing:'cubic-bezier(.22,.61,.36,1)'});
+  }
+  $('#genBtn').addEventListener('click', generate);
+  $('#shareBtn').addEventListener('click', async ()=>{
+    const text = $('#genName').textContent + ' · ' + $('#genCode').textContent;
+    if(navigator.share){ try{ await navigator.share({title:'My VOID signal',text}); }catch(e){} }
+    else if(navigator.clipboard){ await navigator.clipboard.writeText(text); toast('Signal copied to clipboard'); }
+    else toast('Share unavailable');
+  });
+
+  // -------- CUSTOM CURSOR (desktop only) --------
+  const canHover = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(canHover){
+    document.body.classList.add('cursor-active');
+    const cur = $('#cursor'), ring = $('#cursor-ring');
+    let x=innerWidth/2,y=innerHeight/2,rx=x,ry=y;
+    document.addEventListener('mousemove',e=>{ x=e.clientX; y=e.clientY; cur.style.transform=`translate(${x}px,${y}px) translate(-50%,-50%)`; });
+    (function loop(){
+      rx += (x-rx)*0.15; ry += (y-ry)*0.15;
+      ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+      requestAnimationFrame(loop);
+    })();
+    const hot = 'a,button,[data-add],.frag,.step,.icon-btn,.btn,.cart-item';
+    document.addEventListener('mouseover',e=>{ if(e.target.closest(hot)) document.body.classList.add('cursor-hot'); });
+    document.addEventListener('mouseout',e=>{ if(e.target.closest(hot)) document.body.classList.remove('cursor-hot'); });
+  }
+
+  // -------- PARALLAX ORB (subtle) --------
+  const orb = document.querySelector('.orb');
+  if(orb && canHover){
+    window.addEventListener('mousemove',e=>{
+      const cx = (e.clientX/innerWidth - .5);
+      const cy = (e.clientY/innerHeight - .5);
+      orb.style.transform = `translate3d(${cx*14}px,${cy*14}px,0) rotate(${(performance.now()/80)%360}deg)`;
+    },{passive:true});
+  }
+})();
+</script>
+</body>
+</html>
